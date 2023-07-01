@@ -182,6 +182,26 @@ class Graph(object):
         """Return the results of dfs with numbers converted to names."""
         return [self.node_names[num] for num in self.dfs(start_node_num)]
 
+    
+    def bfs_helper(self,start_node):
+        node_queue = []
+        start_node.visited = True
+        ret_list = [start_node.value]
+        finish = False
+        while finish == False:
+            for x in start_node.edges:
+                if x.node_from == start_node:
+                    if x.node_to.visited == True:
+                        finish = True
+                    else:
+                        finish = False
+                        node_queue.append(x.node_to)
+                        ret_list.append(x.node_to.value)
+                        x.node_to.visited = True
+            start_node = node_queue[0]
+            node_queue = node_queue[1:]                    
+        
+        return ret_list
     def bfs(self, start_node_num):
         """TODO: Create an iterative implementation of Breadth First Search
         iterating through a node's edges. The output should be a list of
@@ -189,11 +209,11 @@ class Graph(object):
         ARGUMENTS: start_node_num is the node number (integer)
         MODIFIES: the value of the visited property of nodes in self.nodes
         RETURN: a list of the node values (integers)."""
-        node = self.find_node(start_node_num)
+        start_node = self.find_node(start_node_num)
         self._clear_visited()
-        ret_list = [node.value]
+        
         # Your code here
-        return ret_list
+        return self.bfs_helper(start_node)
 
     def bfs_names(self, start_node_num):
         """Return the results of bfs with numbers converted to names."""
